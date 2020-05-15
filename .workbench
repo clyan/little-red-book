@@ -1,0 +1,13 @@
+{
+  “fcRouteDefault” : [
+    {“apiUri”:”/helloworld”,
+     “fcHandler”:”HelloworldHandler.handler”,
+     “httpMethod”:”GET”
+    },
+    {“apiUri”:”/index”,
+     “fcHandler”:”IndexHandler.handler”,
+     “httpMethod”:”GET”
+    },
+  ],
+  “eciConfigDefault” : {}
+}
