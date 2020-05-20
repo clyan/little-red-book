@@ -6,7 +6,11 @@ module.exports.handler = function(event, context, callback) {
       const strBody = event.isBase64Encoded
         ? new Buffer(event.body, "base64").toString()
         : event.body;
-      const reply = `Hello World: 服务端收到消息：${strBody}`;
+
+      if( strBody ){
+        strBody = ` 服务端收到消息：${strBody}`;
+      }
+      const reply = `Hello World！${strBody}`;
       const response = {
         isBase64Encoded: false,
         statusCode: "200",
