@@ -1,23 +1,8 @@
-### 一分钟说明
-+ 这个Demo演示了基于云开发平台来构建Serverless应用便捷性。
-+ 能看到这个README说明您已经通过云开发平台创建了HelloWorld应用
-1. 在CloudIDE右下角”终端“执行：npm install
-2. 接下来仅需要打开CloudIDE左上角的弹出对话框，然后点击“部署”按钮，就可以在阿里云上“0”费用部署您的第一个应用了
-3. 部署完后，可以在“调试”分页中看到部署后的效果，将收到“Hello World: 服务端收到消息：xxx“。
-+ 至此，您的第一个应用已经上线到测试环境中了。
-1. ![1、部署图](https://image.workbenchapi.com/helloworld/deploy1.png)
-2. ![2、调试图](http://image.workbenchapi.com/helloworld/%E8%B0%83%E8%AF%95.png)
+### Quick Start
 
----
-### 路由信息（**拷贝**到部署路由文本框）
-```
-[
-  [
-    "/helloworld",  "HelloworldHandler.handler"
-  ],
-  [
-    "/index",  "IndexHandler.handler"
-  ]
-]
-```
-
+1. 本示例演示了基础的 Restful API 应用形态
+2. 在终端运行 npm install
+3. 将应用部署到日常环境，用云开发平台分配的临时测试域名访问部署的应用即可看到效果
+3. 可参考 index.js 和 list.js 源码，新建更多页面
+4. 新建的页面，如果需要访问，可以在部署插件中参考原有数据新增路由函数映射
+5. 重新部署，查看实际效果
