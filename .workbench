@@ -1,12 +1,8 @@
 {
   "fcRouteDefault" : [
-    {"apiUri":"/",
-     "fcHandler":"index.handler",
-     "httpMethod":"GET"
-    },
-    {"apiUri":"/list/[listId]",
-     "fcHandler":"list.handler",
-     "httpMethod":"GET"
+    {"apiUri":"/*",
+     "fcHandler":"serverless.handler",
+     "httpMethod":"ANY"
     }
   ]
 }
