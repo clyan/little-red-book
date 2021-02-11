@@ -76,6 +76,7 @@ function resolvePromise(promise, result, resolve, reject) {
     let isComplexResult = target => (typeof result === 'function' || typeof result === 'object') && (target !== null);
     if (isComplexResult(result)) {
         try {
+           
              thenable = result.then;
             if (typeof thenable === 'function') {
                 thenable.call(result, 
