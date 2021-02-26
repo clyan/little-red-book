@@ -3,10 +3,10 @@ const FULFILLED = 'fulfilled';
 const REJECTED = 'rejected';
 const isFunction = (target) => {
     return typeof target === 'function';
-} 
+}
 const isObject = (target) => {
     return typeof target === 'object';
-} 
+}
 const initExecutorAsync = () => {
     let executorAsync = null;
         executorAsync = (fn) => {
