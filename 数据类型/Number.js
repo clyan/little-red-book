@@ -99,3 +99,9 @@ const { log } = console;
     log(isNaN({})) // true
     log(isNaN([])) // false
 })();
+(function numberObject() {           
+    let numblerObject = new Number(0.15158888888888888888888888888888888888888888888888888888888888888);
+    // node v14.15.0 最大支持17位
+    log(numblerObject.toFixed(17)) // 0.15158888888888888
+    log(numblerObject.toFixed(50)) // 错误结果 0.15158888888888888413220001893932931125164031982422
+})();
