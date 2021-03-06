@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <input type="file" id="files-list" onchange="handleFileChange(this)" / >
+    </div>
+    <div>
+        <button type="button" onclick="handleUpload(this)">上传</button>
+    </div>
+    <div id = "ouput">
+        
+    </div>
+    <div id = "progress">
+        
+    </div>
+    <script src="./request.js"></script>
+    <script>
+        // wholeFile 完整的文件
+        let wholeFile = null, data = [];
+        const SIZE = 5 * 1024 * 1024; // 切片大小
+        function createFileChunk(file, size = SIZE) {
+            const fileChunkList = [];
+            let cur = 0;
+            while (cur < file.size) {
+                fileChunkList.push({ file: file.slice(cur, cur + size) });
+                cur += size;
+            }
+            return fileChunkList;
+        }
+
+        async function uploadChunks() {
+            const requestList = data.map(({ chunk, hash }) => {
+                  const formData = new FormData();
+                  formData.append("chunk", chunk);
+                  formData.append("hash", hash);
+                  formData.append("filename", wholeFile.name);
+                  return { formData };
+                }).map(async ({ formData }) =>
+                  request({
+                    url: "http://localhost:3000/upload",
+                    data: formData
+                })
+            );
+            console.log(requestList)
+            await Promise.all(requestList);
+                  // 合并切片
+            await mergeRequest();
+        }
+
+        async function mergeRequest() {
+            let data = await request({
+                url: "http://localhost:3000/merge",
+                headers: {
+                "content-type": "application/json"
+                },
+                data: JSON.stringify({
+                    size: SIZE,
+                    filename: wholeFile.name
+                })
+            });
+            console.log('data', data)
+        }
+
+        async function handleUpload(e) {
+            if (!wholeFile) return;
+            const fileChunkList = createFileChunk(wholeFile);
+            data = fileChunkList.map(({ file }, index) => ({
+                chunk: file,
+                hash: wholeFile.name + "-" + index // 文件名 + 数组下标
+            }));
+            console.dir('handleUpload', data)
+            await uploadChunks();
+        }
+
+        function handleFileChange(e) {
+            const [file] = e.files;
+            if (!file) return;
+            wholeFile = file;
+        }
+    </script>
+</body>
+</html>

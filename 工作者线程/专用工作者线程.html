@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+<script>
+    // 一个专用工作者线程只能存在于一个网页，除非明确终止
+    const worker = new Worker('./zhuanyong.js', {
+        name: 'woker1', // 通过 self.name 获取 
+        type: 'classic', // 值： classic 代表常规脚本执行， module 模块来执行
+        // credentials: 'omit', // 当type为module时 指定如何获取与传输凭证数据相关的工作者线程模块脚本。值：'omit', 'same-orign','include'
+    });
+    console.log(worker)
+    // worker.terminate() //终止Woker
+    worker.addEventListener('message', ({data})=> {
+        console.log('data from self', data)
+    }) // 接收 self.postMessage 发送的消息。
+    setTimeout(() => {
+        worker.postMessage('winFoo')
+        worker.terminate()
+        worker.postMessage('winBar')    //不发送
+        setTimeout(() => {
+            worker.postMessage('baz') //不发送
+        })
+    }, 1000) // 给1000毫秒的时间让工作者线程初始化
+    // worker.terminate() 与 self.close()多次调用不会有影响
+</script>
+</body>
+</html>

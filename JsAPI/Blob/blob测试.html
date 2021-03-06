@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="files-list" / >
+    <div id = "ouput">
+        
+    </div>
+    <div id = "progress">
+        
+    </div>
+    <script>
+        // 读取文本测试。。。
+        let fileList = document.getElementById('files-list');
+        fileList.addEventListener('change', (event) => {
+            let files = event.target.files, 
+                info = '', 
+                output = document.getElementById('ouput'), 
+                progress = document.getElementById('progress'),
+                type = 'default',
+                reader = new FileReader(),
+                // blob = new Blob([files[0]]).slice(0 , 10);   //使用blob
+                blob = files[0].slice(0 , 10); // file.slice() 返回Blob实例
+                // 将原本的全部的文件，转成一个个分片的Blob 对象,每次只读一部分。
+                if(blob) {
+                    reader.readAsText(blob);
+                    reader.onerror = function() {
+                        output.innerHTML = "Could not read file, error code is" + reader.error.code
+                    }
+                    reader.onload = function() {
+                        console.log('aa', reader.result)
+                        output.innerHTML = reader.result;
+                    }
+                }
+        })
+    </script>
+</body>
+</html>

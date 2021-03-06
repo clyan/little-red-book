@@ -8,11 +8,11 @@ const isObject = (target) => {
     return typeof target === 'object';
 }
 const initExecutorAsync = () => {
-    let executorAsync = null;
-        executorAsync = (fn) => {
-            setTimeout(fn,0)
-        }
-    return executorAsync;
+	let executorAsync = null;
+		executorAsync = (fn) => {
+			setTimeout(fn,0)
+		}
+	return executorAsync;
 }
 const executorAsync = initExecutorAsync();
 function MyPromise(executor) {
@@ -202,6 +202,77 @@ MyPromise.prototype.then = function(onfulfilled, onrejected) {
         })
     }
 }
+MyPromise.resolve = function (data) {
+    return new MPromise((resolve) => {
+        return resolve(data);
+    })
+}
+MyPromise.reject = function (data) {
+    return new MPromise((resolve, reject) => {
+        return reject(data);
+    })
+}
+MyPromise.all = function (promises) {
+  if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
+    return new TypeError('cannot read Symbol.iterator of underfined');
+  }
+  if(Object.keys(promises).length === 0) {
+    return MyPromise.resolve([]);
+  }
+  let result = [];
+  return new MyPromise((resolve, reject) => {
+    for(let val of promises) {
+        MyPromise.resolve(val).then(data => {
+            result.push(data);
+            if(result.length === promises.length) {
+                return promises(result);
+            }
+        }, (err) => {
+           return reject(err)
+        })
+    }
+  })
+}
+MyPromise.race = function(promises) {
+    if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
+        return new TypeError('cannot read Symbol.iterator of underfined');
+    }
+    if(Object.keys(promises).length === 0) {
+        return MyPromise.resolve();
+    }
+    return MyPromise((resolve, reject) => {
+        for(let val of promises) {
+            MyPromise.resolve(val).then(data=> {
+                resolve(data)
+            }, (err) => {
+                reject(err)
+            })
+        }
+    })
+}
+
+MyPromise.allSettled = function (promises) {
+    if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
+      return new TypeError('cannot read Symbol.iterator of underfined');
+    }
+    if(Object.keys(promises).length === 0) {
+      return MyPromise.resolve([]);
+    }
+    let result = [];
+    return new MyPromise((resolve) => {
+      for(let val of promises) {
+          MyPromise.resolve(val).then(data => {
+            result.push({status:'fulfilled',value:data});
+              if(result.length === promises.length) {
+                  return resolve(result);
+              }
+          }, (err) => {
+             result.push({status:'rejected',reason:reason});
+          })
+      }
+    })
+}
+
 MyPromise.defer = MyPromise.deferred = function(){
     let dfd = {};
     dfd.promise = new MyPromise((resolve, reject)=>{

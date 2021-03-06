@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="files-list" / >
+    <div id = "ouput">
+        
+    </div>
+    <div id = "progress">
+        
+    </div>
+    <script>
+        // 读取文本测试。。。
+        let fileList = document.getElementById('files-list');
+        fileList.addEventListener('change', (event) => {
+            let files = event.target.files, 
+                info = '', 
+                output = document.getElementById('ouput'), 
+                progress = document.getElementById('progress'),
+                type = 'default',
+                reader = new FileReader(),
+                // createObjectURL 直接返回URL，不用读取到javascript中
+                url = window.URL.createObjectURL(files[0]);
+                output.innerHTML = `<img src=${url} />`;
+        })
+    </script>
+</body>
+</html>

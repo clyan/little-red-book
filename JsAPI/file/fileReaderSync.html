@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="file" id="files-list" / >
+    <div id = "ouput">
+        
+    </div>
+    <div id = "progress">
+        
+    </div>
+    
+    <script>
+        // 使用worker 必须开启服务不能直接打开html的形式，否则会报错。
+        const worker = new Worker('./fileReaderSyncWork.js', {
+            name: 'woker1', // 通过 self.name 获取 
+            type: 'classic', // 值： classic 代表常规脚本执行， module 模块来执行
+            // credentials: 'omit', // 当type为module时 指定如何获取与传输凭证数据相关的工作者线程模块脚本。值：'omit', 'same-orign','include'
+        });
+        let fileList = document.getElementById('files-list');
+        fileList.addEventListener('change', (event) => {
+            let files = event.target.files, 
+                info = '', 
+                output = document.getElementById('ouput'), 
+                progress = document.getElementById('progress'),
+                type = 'default';
+                // files[0]传给woker ,worker中使用 FileReadSync ，worker处理好返回结果再传回来 
+                worker.postMessage(files[0]);
+                worker.addEventListener('message', ({data})=> {
+                    output.innerHTML = data;
+                })
+        })
+    </script>
+</body>
+</html>
