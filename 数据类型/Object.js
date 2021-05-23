@@ -11,8 +11,26 @@ let objLiteral = {
         return '123'
     }
 }
-
-console.log(obj.toLocaleString()) // [object Object]
-console.log(objLiteral.toLocaleString())  // 123
+log(obj.toLocaleString()) // [object Object]
+log(objLiteral.toLocaleString())  // 123
 // 运算，先调用 valueOf, 再调用toString
-console.log(objLiteral + 1);
+log(objLiteral + 1);
+
+log('======================Object.defineProperty========================') // [object Object]
+let ob = {
+}
+
+// writable 、 value 与 get set不能同时使用。
+Object.defineProperty(ob, 'name', {
+    congifurable: false,
+    enumerable: true,
+    get() {
+        return 456
+    },
+    set(newval) {
+        return val;
+    }
+})
+delete ob.name;
+log(ob.name)
+

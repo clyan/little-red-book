@@ -74,7 +74,7 @@ app.post('/merge', jsonParser,async (req, resp) => {
             readStream.pipe(writeStream);
         })
     }))
-    fs.rmdirSync(chunkDir);
+   fs.rmdirSync(chunkDir);
    resp.status = 200;
    resp.end('yes')
 })

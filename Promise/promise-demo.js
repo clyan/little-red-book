@@ -131,8 +131,7 @@ MyPromise.prototype.then = function(onfulfilled, onrejected) {
     //then 返回promise.
     let promise = null;
     let { status } =  this 
- 
-   
+
     // 2.2.2.1 它一定是在 promise 是 fulfilled 状态后调用，并且接受一个参数 value
     // 2.2.2.3 它最多被调用一次
     if (status === FULFILLED) {
@@ -151,7 +150,7 @@ MyPromise.prototype.then = function(onfulfilled, onrejected) {
             })
         })
     }
-  
+
    // 2.2.3.1 它一定在 promise 是 rejected 状态后调用，并且接受一个参数 reason
    // 2.2.3.2 它一定在 promise 是 rejected 状态后调用
    // 2.2.3.3 它最多被调用一次
@@ -212,6 +211,7 @@ MyPromise.reject = function (data) {
         return reject(data);
     })
 }
+// 所有的成功即成功。。
 MyPromise.all = function (promises) {
   if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
     return new TypeError('cannot read Symbol.iterator of underfined');
@@ -225,7 +225,7 @@ MyPromise.all = function (promises) {
         MyPromise.resolve(val).then(data => {
             result.push(data);
             if(result.length === promises.length) {
-                return promises(result);
+                return resolve(result);
             }
         }, (err) => {
            return reject(err)
@@ -233,6 +233,7 @@ MyPromise.all = function (promises) {
     }
   })
 }
+// 循环遍历promise,并且有一个成功即成功
 MyPromise.race = function(promises) {
     if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
         return new TypeError('cannot read Symbol.iterator of underfined');
@@ -250,7 +251,7 @@ MyPromise.race = function(promises) {
         }
     })
 }
-
+// 无论是否执行成功都返回他的状态及结果
 MyPromise.allSettled = function (promises) {
     if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
       return new TypeError('cannot read Symbol.iterator of underfined');
