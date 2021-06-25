@@ -131,8 +131,8 @@ MPromise.prototype.then = function(onfulfilled, onrejected) {
         setTimeout(() => {
           try {
             // 这个新的 promise2 reject 的值为 onrejected 的执行结果
-           let result = onrejected(this.reason)
-           resolvePromise(promise2, result, resolve, reject)
+            let result = onrejected(this.reason)
+            resolvePromise(promise2, result, resolve, reject)
           }
           catch(e) {
             reject(e)
@@ -151,7 +151,6 @@ MPromise.prototype.then = function(onfulfilled, onrejected) {
             return reject(e)
           }
         })
-   
         this.onrejectedList.push(reason => {
           try {
             let result = onrejected(reason)

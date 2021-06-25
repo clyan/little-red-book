@@ -179,7 +179,7 @@ MyPromise.prototype.then = function(onfulfilled, onrejected) {
             this.onfulfilledList.push((value) => {
                 // onfulfilled 函数内部出错，则直接reject
                 try {
-                    // 执行函数传入上一个promise, reject的值返回。
+                    // 执行函数传入上一个promise, resolve的值返回。
                     const result = onfulfilled(value);
                     // 处理， 并resolve 或reject， 同时result 可能为 promise 也可能为普通值。
                     resolvePromise(promise, result, resolve, reject);
@@ -202,36 +202,36 @@ MyPromise.prototype.then = function(onfulfilled, onrejected) {
     }
 }
 MyPromise.resolve = function (data) {
-    return new MPromise((resolve) => {
+    return new MyPromise((resolve) => {
         return resolve(data);
     })
 }
 MyPromise.reject = function (data) {
-    return new MPromise((resolve, reject) => {
+    return new MyPromise((resolve, reject) => {
         return reject(data);
     })
 }
 // 所有的成功即成功。。
 MyPromise.all = function (promises) {
-  if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
-    return new TypeError('cannot read Symbol.iterator of underfined');
-  }
-  if(Object.keys(promises).length === 0) {
-    return MyPromise.resolve([]);
-  }
-  let result = [];
-  return new MyPromise((resolve, reject) => {
-    for(let val of promises) {
-        MyPromise.resolve(val).then(data => {
-            result.push(data);
-            if(result.length === promises.length) {
-                return resolve(result);
-            }
-        }, (err) => {
-           return reject(err)
-        })
+    if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
+        return new TypeError('cannot read Symbol.iterator of underfined');
     }
-  })
+    if(Object.keys(promises).length === 0) {
+        return MyPromise.resolve([]);
+    }
+    let result = [];
+    return new MyPromise((resolve, reject) => {
+        for(let val of promises) {
+            MyPromise.resolve(val).then(data => {
+                result.push(data);
+                if(result.length === promises.length) {
+                    return resolve(result);
+                }
+            }, (err) => {
+                return reject(err)
+            })
+        }
+    })
 }
 // 循环遍历promise,并且有一个成功即成功
 MyPromise.race = function(promises) {
@@ -254,23 +254,23 @@ MyPromise.race = function(promises) {
 // 无论是否执行成功都返回他的状态及结果
 MyPromise.allSettled = function (promises) {
     if(promises !== null && typeof promises[Symbol.iterator] !== 'function') {
-      return new TypeError('cannot read Symbol.iterator of underfined');
+        return new TypeError('cannot read Symbol.iterator of underfined');
     }
     if(Object.keys(promises).length === 0) {
-      return MyPromise.resolve([]);
+        return MyPromise.resolve([]);
     }
     let result = [];
     return new MyPromise((resolve) => {
-      for(let val of promises) {
-          MyPromise.resolve(val).then(data => {
+        for(let val of promises) {
+            MyPromise.resolve(val).then(data => {
             result.push({status:'fulfilled',value:data});
-              if(result.length === promises.length) {
-                  return resolve(result);
-              }
-          }, (err) => {
-             result.push({status:'rejected',reason:reason});
-          })
-      }
+                if(result.length === promises.length) {
+                    return resolve(result);
+                }
+            }, (err) => {
+                result.push({status:'rejected',reason:reason});
+            })
+        }
     })
 }
 
@@ -282,4 +282,7 @@ MyPromise.defer = MyPromise.deferred = function(){
     });
     return dfd;
 }
-module.exports =  MyPromise;
+
+if(typeof window === 'object'){
+    module.exports =  MyPromise;
+}
