@@ -17,7 +17,7 @@ function extractExt(filename) {
 
 app.post('/upload', (req, resp) => {
     let multipart = new multiparty.Form();
-    multipart.parse(req,async (err, fields, files) => {
+    multipart.parse(req, async (err, fields, files) => {
         if(err) {
             resp.status = 500;
             resp.statusMessage = err;
@@ -35,7 +35,7 @@ app.post('/upload', (req, resp) => {
 
         if(fs.existsSync(filePath)) {
             resp.status = 200;
-            resp.end("file exist");
+            resp.end("file exist", encoding = 'utf-8');
             return;
         }
         if(!fs.existsSync(chunkDir)) {
@@ -48,35 +48,39 @@ app.post('/upload', (req, resp) => {
         readStream.pipe(writeStream);
         readStream.on('end',async function(){
             await fs.unlinkSync(chunk.path);
+            writeStream.close();
             resp.status = 200;
-            resp.end("上传完成");
+            resp.end("上传完成", encoding = 'utf-8');
         });
     })
 
 })
 app.post('/merge', jsonParser,async (req, resp) => {
-   const { size, filename, fileHash } = req.body;
-   const extractExtName = extractExt(filename);
-   const uploadPath = path.resolve(UPLOAD_DIR,`./${fileHash}${extractExtName}`);
-   const chunkDir = path.resolve(UPLOAD_DIR, fileHash);
-   const chunkPaths = await fs.readdirSync(chunkDir);
-   chunkPaths.sort((a, b) => a.split('-')[0] - b.split('-')[0]);
+    const { size, filename, fileHash } = req.body;
+    const extractExtName = extractExt(filename);
+    const uploadPath = path.resolve(UPLOAD_DIR,`./${fileHash}${extractExtName}`);
+    const chunkDir = path.resolve(UPLOAD_DIR, fileHash);
+    const chunkPaths = await fs.readdirSync(chunkDir);
+    chunkPaths.sort((a, b) => a.split('-')[0] - b.split('-')[0]);
+    console.log(uploadPath)
     await Promise.all(chunkPaths.map((chunkPath, index) => {
         return new Promise((resolve) => {
-            const readStream = fs.createReadStream(chunkPath);
-            readStream.on('end',() => {
-                fs.unlinkSync();
-            })
+            const p = chunkDir + '/' + chunkPath;
+            const readStream = fs.createReadStream(p);
             const writeStream = fs.createWriteStream(uploadPath, {
                 start: index * size,
                 end: (index + 1) * size
             })
+            readStream.on('end', async () => {
+                await fs.unlinkSync(p)
+                resolve()
+            })
             readStream.pipe(writeStream);
         })
     }))
-   fs.rmdirSync(chunkDir);
-   resp.status = 200;
-   resp.end('yes')
+    fs.rmdirSync(chunkDir);
+    resp.status = 200;
+    resp.end('yes', encoding = 'utf-8')
 })
 app.listen(3000, ()=> {
     console.log('http://127.0.0.1:3000')
