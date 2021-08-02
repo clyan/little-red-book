@@ -283,6 +283,6 @@ MyPromise.defer = MyPromise.deferred = function(){
     return dfd;
 }
 
-if(typeof window === 'object'){
+if(typeof window !== 'object'){
     module.exports =  MyPromise;
 }
