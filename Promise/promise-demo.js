@@ -268,7 +268,7 @@ MyPromise.allSettled = function (promises) {
                     return resolve(result);
                 }
             }, (err) => {
-                result.push({status:'rejected',reason:reason});
+                result.push({status:'rejected',reason:err});
             })
         }
     })
