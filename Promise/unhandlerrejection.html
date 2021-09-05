@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    Promise.reject("test");
+    window.addEventListener("unhandledrejection", (event) => {
+      console.log("event", event);
+      console.warn(`UNHANDLED PROMISE REJECTION: ${event.reason}`);
+      event.preventDefault();
+      // 通过addEventListener绑定的事件，不能通过return false来阻止默认行为
+    });
+  </script>
+</html>

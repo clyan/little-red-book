@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <input type="button" value="异常1" onclick="message1()" />
+    <input type="button" value="异常2" onclick="message2()" />
+    <input type="button" value="异常3" onclick="message3()" />
+    <input type="button" value="异常4" onclick="message4()" />
+    <script type="text/javascript" src="abc.js"></script>
+    <script type="text/javascript" src="abc.js" crossorigin></script>
+    <img src="abc.png" />
+    <script type="text/javascript">
+      window.onerror = handleOnError;
+      window.addEventListener("error", handleListenerError, true);
+      function handleOnError(
+        errorMessage,
+        scriptURI,
+        lineNumber,
+        columnNumber,
+        errorObj
+      ) {
+        // some code
+        return true; // 阻止浏览器console输出
+      }
+      function handleListenerError(eventErr) {
+        // some code
+        eventErr.preventDefault(); // 阻止浏览器console输出
+      }
+      function message1() {
+        aalert("hello!");
+      }
+      function message2() {
+        throw new Error("hello");
+      }
+      function message3() {
+        console.log(a);
+      }
+      function message4() {
+        xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onreadystatechange = state_Change;
+        xhr.send();
+      }
+      function state_Change() {
+        if (xhr.readyState == 4) {
+          if (xhr.status == 200) {
+            message3();
+          } else {
+            // somecode
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
